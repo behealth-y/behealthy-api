@@ -1,1 +1,1 @@
-# behealty-api
+# behealthy-api
