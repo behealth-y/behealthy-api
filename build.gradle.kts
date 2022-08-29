@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 object DependencyVersion {
     const val KOTLIN_LOGGING = "2.1.20"
+    const val SPRINGDOC_OPENAPI = "1.6.11"
 }
 plugins {
     id("org.springframework.boot") version "2.7.3"
@@ -21,7 +22,11 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
+
+    implementation("org.springdoc:springdoc-openapi-ui:${DependencyVersion.SPRINGDOC_OPENAPI}")
+
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
     implementation("io.github.microutils:kotlin-logging-jvm:${DependencyVersion.KOTLIN_LOGGING}")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -37,4 +42,10 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+springBoot {
+    // BuildProperties 사용하려면 필요
+    // See https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/#integrating-with-actuator.build-info
+    buildInfo()
 }
