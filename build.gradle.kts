@@ -27,6 +27,8 @@ dependencies {
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
+    implementation("io.jsonwebtoken:jjwt:0.9.1")
+
     implementation("org.springdoc:springdoc-openapi-ui:${DependencyVersion.SPRINGDOC_OPENAPI}")
 
     implementation("io.github.microutils:kotlin-logging-jvm:${DependencyVersion.KOTLIN_LOGGING}")
