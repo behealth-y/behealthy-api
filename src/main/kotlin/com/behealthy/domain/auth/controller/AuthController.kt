@@ -23,13 +23,19 @@ class AuthController(
 ) {
 
     @PostMapping("/auth/signup")
-    fun signup(@RequestBody emailPasswordUserCreationDto: EmailPasswordUserCreationRequest): ResponseEntity<Unit> {
+    fun signup(
+        @RequestBody
+        emailPasswordUserCreationDto: EmailPasswordUserCreationRequest
+    ): ResponseEntity<Unit> {
         emailPasswordUserService.create(emailPasswordUserCreationDto)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
     @PostMapping("/auth")
-    fun authentication(@RequestBody emailPasswordAuthenticationDto: EmailPasswordAuthenticationRequest): AuthenticationResponse {
+    fun authentication(
+        @RequestBody
+        emailPasswordAuthenticationDto: EmailPasswordAuthenticationRequest
+    ): AuthenticationResponse {
         authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(
                 emailPasswordAuthenticationDto.email,
