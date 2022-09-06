@@ -5,7 +5,6 @@ import com.behealthy.domain.auth.dto.AuthenticationResponse
 import com.behealthy.domain.auth.dto.EmailPasswordAuthenticationRequest
 import com.behealthy.domain.auth.dto.EmailPasswordUserCreationRequest
 import com.behealthy.domain.auth.service.EmailPasswordUserService
-import org.springdoc.api.annotations.ParameterObject
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
@@ -25,7 +24,6 @@ class AuthController(
 
     @PostMapping("/auth/signup")
     fun signup(
-        @ParameterObject
         @RequestBody
         emailPasswordUserCreationDto: EmailPasswordUserCreationRequest
     ): ResponseEntity<Unit> {
@@ -35,7 +33,6 @@ class AuthController(
 
     @PostMapping("/auth")
     fun authentication(
-        @ParameterObject
         @RequestBody
         emailPasswordAuthenticationDto: EmailPasswordAuthenticationRequest
     ): AuthenticationResponse {
