@@ -11,6 +11,7 @@ spring:
     hikari:
       minimum-idle: 1
       maximum-pool-size: 1
+    driver-class-name: com.mysql.jdbc.Driver
   jpa:
     show-sql: true
     properties:

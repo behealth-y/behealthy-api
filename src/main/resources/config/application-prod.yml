@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://behealthy-db.c8swkzpwimbb.ap-northeast-2.rds.amazonaws.com:3306/behealthy?useUnicode=true&charset=utf8mb4&characterEncoding=utf8
+    username:
+    password:
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 10
+    driver-class-name: org.mariadb.jdbc.Driver
+
