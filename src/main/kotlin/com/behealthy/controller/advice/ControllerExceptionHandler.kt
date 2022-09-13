@@ -1,9 +1,12 @@
 package com.behealthy.controller.advice
 
 import com.behealthy.controller.AuthenticationErrorCode
+import com.behealthy.controller.CommonErrorCode
 import com.behealthy.controller.RestErrorCodeConverter
 import com.behealthy.controller.dto.ErrorResponse
 import com.behealthy.exception.CustomException
+import org.springframework.core.Ordered
+import org.springframework.core.annotation.Order
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.AuthenticationException
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -23,5 +26,11 @@ class ControllerExceptionHandler : ResponseEntityExceptionHandler() {
     fun handle(e: CustomException): ResponseEntity<ErrorResponse> {
         val errorCode = RestErrorCodeConverter.convert(e)
         return ResponseEntity.status(errorCode.httpStatus).body(ErrorResponse(errorCode))
+    }
+
+    @Order(Ordered.LOWEST_PRECEDENCE)
+    @ExceptionHandler(Exception::class)
+    fun handle(e: Exception): ErrorResponse {
+        return ErrorResponse(CommonErrorCode.ERR_INTERVAL_SERVER_ERROR)
     }
 }

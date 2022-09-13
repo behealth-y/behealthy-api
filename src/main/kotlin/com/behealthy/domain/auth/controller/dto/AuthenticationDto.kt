@@ -1,4 +1,4 @@
-package com.behealthy.domain.auth.dto
+package com.behealthy.domain.auth.controller.dto
 
 data class EmailPasswordAuthenticationRequest(
     val email: String,

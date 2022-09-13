@@ -12,6 +12,7 @@ import javax.persistence.*
 class EmailPasswordUser(
 
     @Id
+    @Column(name = "user_id", nullable = false)
     val userId: Long,
 
     @Column(nullable = false, unique = true)
@@ -33,7 +34,7 @@ class EmailPasswordUser(
     /**
      * [refer](https://kapentaz.github.io/jpa/Spring-Data-JPA%EC%97%90%EC%84%9C-insert-%EC%A0%84%EC%97%90-select-%ED%95%98%EB%8A%94-%EC%9D%B4%EC%9C%A0/)
      */
-    override fun getId(): Long? = userId
+    override fun getId(): Long = userId
 
     override fun isNew(): Boolean = true
 }

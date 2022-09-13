@@ -29,11 +29,10 @@ class JWTFilter(
             ?.let { authorizationHeader.substring(7) }
 
         if (token != null && SecurityContextHolder.getContext().authentication == null) {
-            val emailPasswordUser = emailPasswordUserService.get(jwtUtil.extractEmail(token))
-            jwtUtil.validateToken(token, emailPasswordUser.email)
+            jwtUtil.validateToken(token)
             val authentication = UsernamePasswordAuthenticationToken(
                 /* principal = */ AuthenticatedUser(
-                    emailPasswordUser.userId,
+                    jwtUtil.extractUserId(token),
                     jwtUtil.extractUserName(token)
                 ),
                 /* credentials = */ null,

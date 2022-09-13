@@ -1,8 +1,9 @@
 package com.behealthy.domain.auth.controller
 
 import com.behealthy.domain.auth.JWTUtil
-import com.behealthy.domain.auth.dto.AuthenticationResponse
-import com.behealthy.domain.auth.dto.EmailPasswordAuthenticationRequest
+import com.behealthy.domain.auth.controller.dto.AuthenticationResponse
+import com.behealthy.domain.auth.controller.dto.EmailPasswordAuthenticationRequest
+import com.behealthy.domain.auth.dto.EmailPasswordAuthenticationUser
 import com.behealthy.domain.auth.dto.EmailPasswordUserCreationRequest
 import com.behealthy.domain.auth.service.EmailPasswordUserService
 import org.springframework.http.HttpStatus
@@ -36,13 +37,13 @@ class AuthController(
         @RequestBody
         emailPasswordAuthenticationDto: EmailPasswordAuthenticationRequest
     ): AuthenticationResponse {
-        authenticationManager.authenticate(
+        val emailPasswordUserDetails = authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(
                 emailPasswordAuthenticationDto.email,
                 emailPasswordAuthenticationDto.password
             )
-        )
-        return AuthenticationResponse(jwtUtil.generateToken(emailPasswordAuthenticationDto.email))
+        ).principal as EmailPasswordAuthenticationUser
+        return AuthenticationResponse(jwtUtil.generateToken(emailPasswordUserDetails.user))
     }
 
 }

@@ -1,12 +1,12 @@
 package com.behealthy.domain.auth.service
 
+import com.behealthy.domain.auth.dto.EmailPasswordAuthenticationUser
 import com.behealthy.domain.auth.dto.EmailPasswordUserCreationRequest
 import com.behealthy.domain.auth.entity.EmailPasswordUser
 import com.behealthy.domain.auth.repository.EmailPasswordUserRepository
 import com.behealthy.domain.user.dto.UserCreationDto
 import com.behealthy.domain.user.service.UserService
 import com.behealthy.exception.UserException
-import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -33,8 +33,9 @@ class EmailPasswordUserService(
     }
 
     override fun loadUserByUsername(username: String): UserDetails {
-        val user = get(username)
-        return User(user.email, user.password, emptyList())
+        val emailPasswordUser = get(username)
+        val user = userService.find(emailPasswordUser.userId).get()
+        return EmailPasswordAuthenticationUser(emailPasswordUser.email, emailPasswordUser.password, user)
     }
 
     fun get(email: String): EmailPasswordUser {
