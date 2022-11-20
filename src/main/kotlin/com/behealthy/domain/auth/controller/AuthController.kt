@@ -5,7 +5,7 @@ import com.behealthy.domain.auth.controller.dto.AuthenticationResponse
 import com.behealthy.domain.auth.controller.dto.EmailPasswordAuthenticationRequest
 import com.behealthy.domain.auth.dto.EmailPasswordAuthenticationUser
 import com.behealthy.domain.auth.dto.EmailPasswordUserCreationRequest
-import com.behealthy.domain.auth.service.EmailPasswordUserService
+import com.behealthy.domain.auth.service.AuthService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api")
 @RestController
 class AuthController(
-    private val emailPasswordUserService: EmailPasswordUserService,
+    private val authService: AuthService,
     private val authenticationManager: AuthenticationManager,
     private val jwtUtil: JWTUtil
 ) {
@@ -28,7 +28,7 @@ class AuthController(
         @RequestBody
         emailPasswordUserCreationDto: EmailPasswordUserCreationRequest
     ): ResponseEntity<Unit> {
-        emailPasswordUserService.create(emailPasswordUserCreationDto)
+        authService.signUp(emailPasswordUserCreationDto)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 

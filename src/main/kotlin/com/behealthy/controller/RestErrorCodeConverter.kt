@@ -12,6 +12,7 @@ object RestErrorCodeConverter {
 
     private fun convert(exception: AuthenticationException) = when (exception) {
         is AuthenticationException.UnAuthenticatedUserException -> AuthenticationErrorCode.ERR_UNAUTHENTICATED_USER
+        is AuthenticationException.AlreadyExistEmailException -> AuthenticationErrorCode.ERR_ALREADY_EXIST_EMAIL
     }
 
     private fun convert(exception: UserException) = when (exception) {
