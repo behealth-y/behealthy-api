@@ -3,9 +3,11 @@ package com.behealthy.domain.auth.controller
 import com.behealthy.domain.auth.JWTUtil
 import com.behealthy.domain.auth.controller.dto.AuthenticationResponse
 import com.behealthy.domain.auth.controller.dto.EmailPasswordAuthenticationRequest
+import com.behealthy.domain.auth.controller.dto.EmailVerificationRequest
 import com.behealthy.domain.auth.dto.EmailPasswordAuthenticationUser
 import com.behealthy.domain.auth.dto.EmailPasswordUserCreationRequest
 import com.behealthy.domain.auth.service.AuthService
+import com.behealthy.domain.auth.service.EmailVerificationService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
@@ -20,7 +22,8 @@ import org.springframework.web.bind.annotation.RestController
 class AuthController(
     private val authService: AuthService,
     private val authenticationManager: AuthenticationManager,
-    private val jwtUtil: JWTUtil
+    private val jwtUtil: JWTUtil,
+    private val emailVerificationService: EmailVerificationService
 ) {
 
     @PostMapping("/auth/signup")
@@ -46,4 +49,8 @@ class AuthController(
         return AuthenticationResponse(jwtUtil.generateToken(emailPasswordUserDetails.user))
     }
 
+    @PostMapping("/auth/email-verification")
+    fun requestEmailVerification(@RequestBody request: EmailVerificationRequest) {
+        emailVerificationService.request(request.email)
+    }
 }
