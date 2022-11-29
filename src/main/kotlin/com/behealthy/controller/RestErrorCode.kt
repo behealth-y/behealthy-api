@@ -14,7 +14,8 @@ enum class CommonErrorCode(override val httpStatus: HttpStatus, override val rea
 enum class AuthenticationErrorCode(override val httpStatus: HttpStatus, override val reason: String? = null) :
     RestErrorCode {
     ERR_UNAUTHENTICATED_USER(HttpStatus.UNAUTHORIZED, "인증에 실패했습니다."),
-    ERR_ALREADY_EXIST_EMAIL(HttpStatus.BAD_REQUEST, "중복된 이메일입니다.")
+    ERR_ALREADY_EXIST_EMAIL(HttpStatus.BAD_REQUEST, "중복된 이메일입니다."),
+    ERR_FAILED_EMAIL_VERIFICATION(HttpStatus.BAD_REQUEST, "이메일 인증에 실패했습니다.")
 }
 
 enum class UserErrorCode(override val httpStatus: HttpStatus, override val reason: String? = null) : RestErrorCode {

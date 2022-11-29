@@ -1,9 +1,11 @@
 package com.behealthy.domain.auth.service
 
+import com.behealthy.domain.auth.dto.EmailPasswordUserCreationRequest
 import com.behealthy.domain.auth.entity.EmailVerification
 import com.behealthy.domain.auth.repository.EmailVerificationRepository
 import com.behealthy.domain.email.dto.SendEmailRequest
 import com.behealthy.domain.email.service.EmailSender
+import com.behealthy.exception.AuthenticationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.text.MessageFormat
@@ -18,7 +20,6 @@ class EmailVerificationService(
 
     @Resource
     lateinit var self: EmailVerificationService
-
     fun request(email: String): VerificationCode {
         val verificationCode = VerificationCode.generate()
         self.saveOrUpdateEmailVerification(email, verificationCode)
@@ -30,13 +31,22 @@ class EmailVerificationService(
     fun saveOrUpdateEmailVerification(email: String, verificationCode: VerificationCode) {
         repository.findById(email).ifPresentOrElse(
             { it.updateEmailVerification(verificationCode) },
-            { repository.save(EmailVerification(email, verificationCode.code, verificationCode.expiredAt)) }
+            { repository.save(EmailVerification(email, verificationCode.code, verificationCode.expireAt)) }
         )
+    }
+
+    fun verify(emailPasswordUserCreationDto: EmailPasswordUserCreationRequest) {
+        repository.findById(emailPasswordUserCreationDto.email)
+            .takeIf { it.isPresent }
+            ?.get()
+            ?.let { VerificationCode(it.verificationCode, it.expiredAt) }
+            ?.takeIf { verificationCode -> verificationCode.isVerify(emailPasswordUserCreationDto.emailVerificationCode) }
+            ?: throw AuthenticationException.EmailVerificationException()
     }
 
     private fun EmailVerification.updateEmailVerification(verificationCode: VerificationCode) {
         this.verificationCode = verificationCode.code
-        this.expiredAt = verificationCode.expiredAt
+        this.expiredAt = verificationCode.expireAt
     }
 
     private fun createEmailRequest(email: String, verificationCode: VerificationCode): SendEmailRequest {
@@ -46,7 +56,7 @@ class EmailVerificationService(
             MessageFormat.format(
                 EMAIL_CONTENT,
                 verificationCode.code,
-                verificationCode.expiredAt.format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss"))
+                verificationCode.expireAt.format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss"))
             )
         )
     }
