@@ -1,9 +1,12 @@
 package com.behealthy.domain.auth.service
 
+import com.behealthy.domain.auth.controller.dto.EmailPasswordChangeRequest
+import com.behealthy.domain.auth.controller.dto.EmailPasswordUserCreationRequest
 import com.behealthy.domain.auth.dto.EmailPasswordAuthenticationUser
-import com.behealthy.domain.auth.dto.EmailPasswordUserCreationRequest
+import com.behealthy.domain.auth.dto.EmailVerificationDto
 import com.behealthy.domain.auth.entity.EmailPasswordUser
 import com.behealthy.domain.auth.repository.EmailPasswordUserRepository
+import com.behealthy.domain.auth.type.EmailVerificationPurpose
 import com.behealthy.domain.user.dto.UserCreationDto
 import com.behealthy.domain.user.service.UserService
 import com.behealthy.exception.UserException
@@ -12,13 +15,18 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import javax.annotation.Resource
 
 @Service
 class EmailPasswordUserService(
     private val repository: EmailPasswordUserRepository,
     private val userService: UserService,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val emailVerificationService: EmailVerificationService
 ) : UserDetailsService {
+
+    @Resource
+    lateinit var self: EmailPasswordUserService
 
     @Transactional
     fun create(emailPasswordUserCreationDto: EmailPasswordUserCreationRequest) {
@@ -38,7 +46,17 @@ class EmailPasswordUserService(
         return EmailPasswordAuthenticationUser(emailPasswordUser.email, emailPasswordUser.password, user)
     }
 
+    @Transactional
+    fun changePassword(request: EmailPasswordChangeRequest) {
+        emailVerificationService.verify(
+            emailVerificationDto = EmailVerificationDto(request.email, EmailVerificationPurpose.CHANGE_PASSWORD),
+            code = request.emailVerificationCode
+        )
+        val emailPasswordUser = get(request.email)
+        emailPasswordUser.password = passwordEncoder.encode(request.toBePassword)
+    }
+
     fun get(email: String): EmailPasswordUser {
-        return repository.findFirstByEmail(email).orElseThrow { UserException.NotFoundException() }
+        return repository.findFirstByEmail(email) ?: throw UserException.NotFoundException()
     }
 }

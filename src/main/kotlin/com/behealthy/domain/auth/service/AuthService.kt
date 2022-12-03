@@ -1,6 +1,6 @@
 package com.behealthy.domain.auth.service
 
-import com.behealthy.domain.auth.dto.EmailPasswordUserCreationRequest
+import com.behealthy.domain.auth.controller.dto.EmailPasswordUserCreationRequest
 import com.behealthy.domain.auth.dto.EmailVerificationDto
 import com.behealthy.domain.auth.type.EmailVerificationPurpose
 import com.behealthy.exception.AuthenticationException
