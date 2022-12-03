@@ -1,8 +1,9 @@
 package com.behealthy.domain.auth.service
 
-import com.behealthy.domain.auth.dto.EmailPasswordUserCreationRequest
+import com.behealthy.domain.auth.dto.EmailVerificationDto
 import com.behealthy.domain.auth.entity.EmailVerification
 import com.behealthy.domain.auth.repository.EmailVerificationRepository
+import com.behealthy.domain.auth.type.EmailVerificationPurpose
 import com.behealthy.domain.email.dto.SendEmailRequest
 import com.behealthy.domain.email.service.EmailSender
 import com.behealthy.exception.AuthenticationException
@@ -20,27 +21,35 @@ class EmailVerificationService(
 
     @Resource
     lateinit var self: EmailVerificationService
-    fun request(email: String): VerificationCode {
+    fun request(emailVerificationDto: EmailVerificationDto): VerificationCode {
         val verificationCode = VerificationCode.generate()
-        self.saveOrUpdateEmailVerification(email, verificationCode)
-        emailSender.send(createEmailRequest(email, verificationCode))
+        self.saveOrUpdateEmailVerification(emailVerificationDto, verificationCode)
+        emailSender.send(createEmailRequest(emailVerificationDto.email, verificationCode))
         return verificationCode
     }
 
     @Transactional
-    fun saveOrUpdateEmailVerification(email: String, verificationCode: VerificationCode) {
-        repository.findById(email).ifPresentOrElse(
-            { it.updateEmailVerification(verificationCode) },
-            { repository.save(EmailVerification(email, verificationCode.code, verificationCode.expireAt)) }
-        )
+    fun saveOrUpdateEmailVerification(emailVerificationDto: EmailVerificationDto, verificationCode: VerificationCode) {
+        val purpose = EmailVerification.Purpose.of(emailVerificationDto.purpose)
+        repository.findFirstByEmailAndPurpose(emailVerificationDto.email, purpose)
+            ?.updateEmailVerification(verificationCode)
+            ?: repository.save(
+                EmailVerification(
+                    email = emailVerificationDto.email,
+                    purpose = purpose,
+                    verificationCode = verificationCode.code,
+                    expiredAt = verificationCode.expireAt
+                )
+            )
     }
 
-    fun verify(emailPasswordUserCreationDto: EmailPasswordUserCreationRequest) {
-        repository.findById(emailPasswordUserCreationDto.email)
-            .takeIf { it.isPresent }
-            ?.get()
+    fun verify(emailVerificationDto: EmailVerificationDto, code: String) {
+        repository.findFirstByEmailAndPurpose(
+            email = emailVerificationDto.email,
+            purpose = EmailVerification.Purpose.of(emailVerificationDto.purpose)
+        )
             ?.let { VerificationCode(it.verificationCode, it.expiredAt) }
-            ?.takeIf { verificationCode -> verificationCode.isVerify(emailPasswordUserCreationDto.emailVerificationCode) }
+            ?.takeIf { verificationCode -> verificationCode.isVerify(code) }
             ?: throw AuthenticationException.EmailVerificationException()
     }
 
@@ -60,6 +69,12 @@ class EmailVerificationService(
             )
         )
     }
+
+    private fun EmailVerification.Purpose.Companion.of(emailVerificationPurpose: EmailVerificationPurpose) =
+        when (emailVerificationPurpose) {
+            EmailVerificationPurpose.SIGN_UP -> EmailVerification.Purpose.SIGN_UP
+            EmailVerificationPurpose.CHANGE_PASSWORD -> EmailVerification.Purpose.CHANGE_PASSWORD
+        }
 
     companion object {
         val EMAIL_CONTENT = """

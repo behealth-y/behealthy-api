@@ -8,7 +8,3 @@ data class EmailPasswordAuthenticationRequest(
 data class AuthenticationResponse(
     val token: String
 )
-
-data class EmailVerificationRequest(
-    val email: String
-)

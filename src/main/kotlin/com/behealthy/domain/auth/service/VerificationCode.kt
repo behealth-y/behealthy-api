@@ -8,7 +8,7 @@ data class VerificationCode(
     val expireAt: LocalDateTime
 ) {
 
-    fun isVerify(code: String) = this.code == code && expireAt <= LocalDateTime.now()
+    fun isVerify(code: String) = this.code == code && expireAt >= LocalDateTime.now()
 
     companion object {
         fun generate(availableMinute: Long = 3): VerificationCode {

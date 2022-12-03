@@ -3,9 +3,9 @@ package com.behealthy.domain.auth.controller
 import com.behealthy.domain.auth.JWTUtil
 import com.behealthy.domain.auth.controller.dto.AuthenticationResponse
 import com.behealthy.domain.auth.controller.dto.EmailPasswordAuthenticationRequest
-import com.behealthy.domain.auth.controller.dto.EmailVerificationRequest
 import com.behealthy.domain.auth.dto.EmailPasswordAuthenticationUser
 import com.behealthy.domain.auth.dto.EmailPasswordUserCreationRequest
+import com.behealthy.domain.auth.dto.EmailVerificationDto
 import com.behealthy.domain.auth.service.AuthService
 import com.behealthy.domain.auth.service.EmailVerificationService
 import org.springframework.http.HttpStatus
@@ -50,7 +50,7 @@ class AuthController(
     }
 
     @PostMapping("/auth/email-verification")
-    fun requestEmailVerification(@RequestBody request: EmailVerificationRequest) {
-        emailVerificationService.request(request.email)
+    fun requestEmailVerification(@RequestBody request: EmailVerificationDto) {
+        emailVerificationService.request(request)
     }
 }
