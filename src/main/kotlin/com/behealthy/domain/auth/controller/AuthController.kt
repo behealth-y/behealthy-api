@@ -1,9 +1,7 @@
 package com.behealthy.domain.auth.controller
 
 import com.behealthy.domain.auth.JWTUtil
-import com.behealthy.domain.auth.controller.dto.AuthenticationResponse
-import com.behealthy.domain.auth.controller.dto.EmailPasswordAuthenticationRequest
-import com.behealthy.domain.auth.controller.dto.EmailPasswordUserCreationRequest
+import com.behealthy.domain.auth.controller.dto.*
 import com.behealthy.domain.auth.dto.EmailPasswordAuthenticationUser
 import com.behealthy.domain.auth.dto.EmailVerificationDto
 import com.behealthy.domain.auth.service.AuthService
@@ -54,7 +52,16 @@ class AuthController(
 
     @Operation(summary = "이메일 인증번호 발송")
     @PostMapping("/auth/email-verification/request")
-    fun requestEmailVerification(@RequestBody request: EmailVerificationDto) {
-        emailVerificationService.request(request)
+    fun requestEmailVerification(@RequestBody request: EmailVerificationRequest) {
+        emailVerificationService.request(EmailVerificationDto(request.email, request.purpose))
+    }
+
+    @Operation(summary = "이메일 인증번호 검증")
+    @PostMapping("/auth/email-verification/verify")
+    fun verifyEmailVerification(@RequestBody request: EmailVerificationCodeRequest) {
+        emailVerificationService.verify(
+            EmailVerificationDto(request.email, request.purpose),
+            request.emailVerificationCode
+        )
     }
 }
