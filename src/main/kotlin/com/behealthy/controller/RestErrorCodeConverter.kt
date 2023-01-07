@@ -1,13 +1,13 @@
 package com.behealthy.controller
 
-import com.behealthy.exception.AuthenticationException
-import com.behealthy.exception.CustomException
-import com.behealthy.exception.UserException
+import com.behealthy.exception.*
 
 object RestErrorCodeConverter {
     fun convert(exception: CustomException): RestErrorCode = when (exception) {
         is AuthenticationException -> convert(exception)
         is UserException -> convert(exception)
+        is ControllerException -> convert(exception)
+        is EmailPasswordUserException -> convert(exception)
     }
 
     private fun convert(exception: AuthenticationException) = when (exception) {
@@ -18,5 +18,13 @@ object RestErrorCodeConverter {
 
     private fun convert(exception: UserException) = when (exception) {
         is UserException.NotFoundException -> UserErrorCode.ERR_NOT_FOUND_USER
+    }
+
+    private fun convert(exception: EmailPasswordUserException) = when (exception) {
+        is EmailPasswordUserException.DuplicatedEmailException -> EmailPasswordUserErrorCode.ERR_DUPLICATED_EMAIL
+    }
+
+    private fun convert(exception: ControllerException) = when (exception) {
+        is ControllerException.NotFoundException -> ControllerErrorCode.ERR_NOT_FOUND
     }
 }
