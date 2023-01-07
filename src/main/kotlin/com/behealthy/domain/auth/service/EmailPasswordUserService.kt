@@ -9,6 +9,7 @@ import com.behealthy.domain.auth.repository.EmailPasswordUserRepository
 import com.behealthy.domain.auth.type.EmailVerificationPurpose
 import com.behealthy.domain.user.dto.UserCreationDto
 import com.behealthy.domain.user.service.UserService
+import com.behealthy.exception.EmailPasswordUserException
 import com.behealthy.exception.UserException
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -30,6 +31,7 @@ class EmailPasswordUserService(
 
     @Transactional
     fun create(emailPasswordUserCreationDto: EmailPasswordUserCreationRequest) {
+        raiseIfDuplicatedEmail(emailPasswordUserCreationDto.email)
         val user = userService.create(UserCreationDto(emailPasswordUserCreationDto.name))
         repository.save(
             EmailPasswordUser(
@@ -41,7 +43,7 @@ class EmailPasswordUserService(
     }
 
     override fun loadUserByUsername(username: String): UserDetails {
-        val emailPasswordUser = get(username)
+        val emailPasswordUser = getOrRaiseIfNotExist(username)
         val user = userService.find(emailPasswordUser.userId).get()
         return EmailPasswordAuthenticationUser(emailPasswordUser.email, emailPasswordUser.password, user)
     }
@@ -52,11 +54,19 @@ class EmailPasswordUserService(
             emailVerificationDto = EmailVerificationDto(request.email, EmailVerificationPurpose.CHANGE_PASSWORD),
             code = request.emailVerificationCode
         )
-        val emailPasswordUser = get(request.email)
+        val emailPasswordUser = getOrRaiseIfNotExist(request.email)
         emailPasswordUser.password = passwordEncoder.encode(request.toBePassword)
     }
 
-    fun get(email: String): EmailPasswordUser {
-        return repository.findFirstByEmail(email) ?: throw UserException.NotFoundException()
+    fun raiseIfDuplicatedEmail(email: String) {
+        get(email)?.also { throw EmailPasswordUserException.DuplicatedEmailException() }
+    }
+
+    fun getOrRaiseIfNotExist(email: String): EmailPasswordUser {
+        return get(email) ?: throw UserException.NotFoundException()
+    }
+
+    fun get(email: String): EmailPasswordUser? {
+        return repository.findFirstByEmail(email)
     }
 }

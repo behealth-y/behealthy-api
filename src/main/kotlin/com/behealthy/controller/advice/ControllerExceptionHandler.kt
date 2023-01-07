@@ -1,7 +1,7 @@
 package com.behealthy.controller.advice
 
 import com.behealthy.controller.AuthenticationErrorCode
-import com.behealthy.controller.CommonErrorCode
+import com.behealthy.controller.ControllerErrorCode
 import com.behealthy.controller.RestErrorCodeConverter
 import com.behealthy.controller.dto.ErrorResponse
 import com.behealthy.exception.CustomException
@@ -39,6 +39,6 @@ class ControllerExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(Exception::class)
     fun handle(e: Exception): ErrorResponse {
         kLogger.error { e.message }
-        return ErrorResponse(CommonErrorCode.ERR_INTERVAL_SERVER_ERROR)
+        return ErrorResponse(ControllerErrorCode.ERR_INTERVAL_SERVER_ERROR)
     }
 }
