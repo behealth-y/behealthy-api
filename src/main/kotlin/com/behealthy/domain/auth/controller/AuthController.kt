@@ -53,7 +53,7 @@ class AuthController(
     }
 
     @Operation(summary = "이메일 인증번호 발송")
-    @PostMapping("/auth/email-verification")
+    @PostMapping("/auth/email-verification/request")
     fun requestEmailVerification(@RequestBody request: EmailVerificationDto) {
         emailVerificationService.request(request)
     }
