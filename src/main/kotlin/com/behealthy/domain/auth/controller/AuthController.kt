@@ -8,6 +8,7 @@ import com.behealthy.domain.auth.dto.EmailPasswordAuthenticationUser
 import com.behealthy.domain.auth.dto.EmailVerificationDto
 import com.behealthy.domain.auth.service.AuthService
 import com.behealthy.domain.auth.service.EmailVerificationService
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
@@ -26,6 +27,7 @@ class AuthController(
     private val emailVerificationService: EmailVerificationService
 ) {
 
+    @Operation(summary = "회원가입")
     @PostMapping("/auth/signup")
     fun signup(
         @RequestBody
@@ -35,6 +37,7 @@ class AuthController(
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
+    @Operation(summary = "인증")
     @PostMapping("/auth")
     fun authentication(
         @RequestBody
@@ -49,6 +52,7 @@ class AuthController(
         return AuthenticationResponse(jwtUtil.generateToken(emailPasswordUserDetails.user))
     }
 
+    @Operation(summary = "이메일 인증번호 발송")
     @PostMapping("/auth/email-verification")
     fun requestEmailVerification(@RequestBody request: EmailVerificationDto) {
         emailVerificationService.request(request)
