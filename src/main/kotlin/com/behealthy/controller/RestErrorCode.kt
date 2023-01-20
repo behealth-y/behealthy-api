@@ -30,3 +30,12 @@ enum class EmailPasswordUserErrorCode(
 ) : RestErrorCode {
     ERR_DUPLICATED_EMAIL(reason = "중복된 이메일입니다.")
 }
+
+enum class WorkoutGoalErrorCode(
+    override val httpStatus: HttpStatus = HttpStatus.BAD_REQUEST,
+    override val reason: String? = null
+) : RestErrorCode {
+    ERR_INVALID_MINUTE(reason = "목표 운동 시간의 분은 0~59 이여야합니다"),
+    ERR_INVALID_HOUR(reason = "목표 운동 시간의 시는 0분 이상이여야합니다"),
+    ERR_GOAL_TIME_CAN_NOT_ZERO(reason = "목표 운동 시간은 최소 1분 이상이여야합니다"),
+}
