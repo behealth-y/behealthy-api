@@ -9,7 +9,7 @@ plugins {
     id("io.spring.dependency-management") version "1.0.13.RELEASE"
     kotlin("jvm") version "1.6.21"
     kotlin("plugin.spring") version "1.6.21"
-    kotlin("plugin.jpa") version "1.6.21"
+    kotlin("plugin.jpa") version "1.6.21" // 이게 없으니까 entity 만들 때 기본 생성자 없다고 에러남
 }
 
 group = "com"
@@ -32,6 +32,7 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt:0.9.1")
 
     implementation("org.springdoc:springdoc-openapi-ui:${DependencyVersion.SPRINGDOC_OPENAPI}")
+    implementation("org.springdoc:springdoc-openapi-security:${DependencyVersion.SPRINGDOC_OPENAPI}")
 
     implementation("io.github.microutils:kotlin-logging-jvm:${DependencyVersion.KOTLIN_LOGGING}")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
