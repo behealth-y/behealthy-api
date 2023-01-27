@@ -3,7 +3,8 @@ package com.behealthy.controller.dto
 import com.behealthy.controller.RestErrorCode
 
 data class ErrorResponse(
-    val errorCode: RestErrorCode
+    val errorCode: String,
+    val reason: String?
 ) {
-    val reason: String? = errorCode.reason
+    constructor(errorCode: RestErrorCode) : this(errorCode.name, errorCode.reason)
 }

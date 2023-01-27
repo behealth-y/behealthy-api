@@ -3,6 +3,7 @@ package com.behealthy.controller
 import org.springframework.http.HttpStatus
 
 sealed interface RestErrorCode {
+    val name: String
     val httpStatus: HttpStatus
     val reason: String?
 }
