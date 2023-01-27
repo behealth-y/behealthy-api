@@ -1,5 +1,6 @@
 package com.behealthy.domain.auth.filter
 
+import com.behealthy.domain.auth.AuthConstants
 import com.behealthy.domain.auth.JWTUtil
 import com.behealthy.domain.auth.dto.AuthenticatedUser
 import com.behealthy.domain.auth.service.EmailPasswordUserService
@@ -23,7 +24,7 @@ class JWTFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val authorizationHeader = request.getHeader("Authorization")
+        val authorizationHeader = request.getHeader(AuthConstants.AUTHENTICATION_HEADER_NAME)
         val token = authorizationHeader
             ?.takeIf { authorizationHeader.startsWith("Bearer ") }
             ?.let { authorizationHeader.substring(7) }
