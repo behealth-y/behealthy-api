@@ -14,11 +14,12 @@ class WorkoutGoalService(
 
     @Transactional
     fun setWorkoutGoal(userId: Long, request: WorkoutGoalDto) {
-        getAndSaveWorkoutGoal(userId).let { WorkoutGoal(it).set(request) }
+        getAndSaveWorkoutGoal(userId).set(request)
     }
 
-    private fun getAndSaveWorkoutGoal(userId: Long): WorkoutGoalEntity {
+    fun getAndSaveWorkoutGoal(userId: Long): WorkoutGoal {
         return workoutGoalRepository.findById(userId)
             .orElseGet { workoutGoalRepository.save(WorkoutGoalEntity(userId)) }
+            .let { WorkoutGoal(it) }
     }
 }
