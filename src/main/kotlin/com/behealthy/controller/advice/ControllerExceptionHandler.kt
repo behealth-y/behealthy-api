@@ -22,14 +22,14 @@ class ControllerExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(AuthenticationException::class)
     fun handle(e: AuthenticationException): ResponseEntity<ErrorResponse> {
-        kLogger.error { e.message }
+        kLogger.error { e }
         val errorCode = AuthenticationErrorCode.ERR_UNAUTHENTICATED_USER
         return ResponseEntity.status(errorCode.httpStatus).body(ErrorResponse(errorCode))
     }
 
     @ExceptionHandler(CustomException::class)
     fun handle(e: CustomException): ResponseEntity<ErrorResponse> {
-        kLogger.error { e.message }
+        kLogger.error { e }
         val errorCode = RestErrorCodeConverter.convert(e)
         return ResponseEntity.status(errorCode.httpStatus).body(ErrorResponse(errorCode))
     }
@@ -38,7 +38,7 @@ class ControllerExceptionHandler : ResponseEntityExceptionHandler() {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception::class)
     fun handle(e: Exception): ErrorResponse {
-        kLogger.error { e.message }
+        kLogger.error { e }
         return ErrorResponse(ControllerErrorCode.ERR_INTERVAL_SERVER_ERROR)
     }
 }
