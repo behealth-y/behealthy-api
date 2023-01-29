@@ -8,6 +8,7 @@ import com.behealthy.domain.auth.entity.EmailPasswordUser
 import com.behealthy.domain.auth.repository.EmailPasswordUserRepository
 import com.behealthy.domain.auth.type.EmailVerificationPurpose
 import com.behealthy.domain.user.dto.UserCreationDto
+import com.behealthy.domain.user.entity.UserEntity
 import com.behealthy.domain.user.service.UserService
 import com.behealthy.exception.EmailPasswordUserException
 import com.behealthy.exception.UserException
@@ -44,7 +45,8 @@ class EmailPasswordUserService(
 
     override fun loadUserByUsername(username: String): UserDetails {
         val emailPasswordUser = getOrRaiseIfNotExist(username)
-        val user = userService.find(emailPasswordUser.userId).get()
+        val user = userService.findOfRaiseIfNotExist(emailPasswordUser.userId)
+        if (user.status == UserEntity.Status.WITHDRAW) throw UserException.WithdrawUserException()
         return EmailPasswordAuthenticationUser(emailPasswordUser.email, emailPasswordUser.password, user)
     }
 

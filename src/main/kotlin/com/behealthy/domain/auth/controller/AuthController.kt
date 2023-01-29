@@ -47,7 +47,7 @@ class AuthController(
                 emailPasswordAuthenticationDto.password
             )
         ).principal as EmailPasswordAuthenticationUser
-        return AuthenticationResponse(jwtUtil.generateToken(emailPasswordUserDetails.user))
+        return AuthenticationResponse(jwtUtil.generateToken(emailPasswordUserDetails.userEntity))
     }
 
     @Operation(summary = "이메일 인증번호 발송")

@@ -1,7 +1,7 @@
 package com.behealthy.domain.auth
 
 import com.behealthy.domain.auth.repository.EmailPasswordUserRepository
-import com.behealthy.domain.user.entity.User
+import com.behealthy.domain.user.entity.UserEntity
 import com.behealthy.domain.user.repository.UserRepository
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
@@ -38,8 +38,8 @@ class JWTUtil(
         return isTokenExpired(token)
     }
 
-    fun generateToken(user: User): String {
-        return createToken(mutableMapOf("userId" to user.id!!, "name" to user.name), user.id)
+    fun generateToken(userEntity: UserEntity): String {
+        return createToken(mutableMapOf("userId" to userEntity.id!!, "name" to userEntity.name), userEntity.id)
     }
 
     private fun extractAllClaims(token: String): Claims {

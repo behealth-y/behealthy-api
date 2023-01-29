@@ -28,16 +28,16 @@ class CustomOAuth2UserService(
         return OAuth2AuthenticationUser(oAuthAttribute.attr, oAuthAttribute.nameAttributeKey, user)
     }
 
-    fun findUserOrCreate(oAuth2Attribute: OAuth2Attribute): com.behealthy.domain.user.entity.User {
+    fun findUserOrCreate(oAuth2Attribute: OAuth2Attribute): com.behealthy.domain.user.entity.UserEntity {
         val oAuth2User = repository.findFirstByProviderAndOauth2Id(oAuth2Attribute.provider, oAuth2Attribute.oauth2Id)
         return if (oAuth2User.isPresent) {
-            userService.find(oAuth2User.get().userId).get()
+            userService.findOfRaiseIfNotExist(oAuth2User.get().userId)
         } else {
             create(oAuth2Attribute)
         }
     }
 
-    private fun create(oAuth2Attribute: OAuth2Attribute): com.behealthy.domain.user.entity.User {
+    private fun create(oAuth2Attribute: OAuth2Attribute): com.behealthy.domain.user.entity.UserEntity {
         val user = userService.create(UserCreationDto(oAuth2Attribute.name))
         repository.save(
             com.behealthy.domain.auth.entity.OAuth2User(

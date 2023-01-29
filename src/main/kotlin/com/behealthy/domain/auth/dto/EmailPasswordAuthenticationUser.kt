@@ -1,13 +1,13 @@
 package com.behealthy.domain.auth.dto
 
-import com.behealthy.domain.user.entity.User
+import com.behealthy.domain.user.entity.UserEntity
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 class EmailPasswordAuthenticationUser(
     private val email: String,
     private val _password: String,
-    val user: User,
+    val userEntity: UserEntity,
 ) : UserDetails {
     override fun getAuthorities(): Collection<GrantedAuthority> = emptyList()
     override fun getUsername(): String = email
