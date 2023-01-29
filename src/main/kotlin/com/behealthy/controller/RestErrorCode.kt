@@ -26,8 +26,12 @@ enum class AuthenticationErrorCode(override val httpStatus: HttpStatus, override
     ERR_FAILED_EMAIL_VERIFICATION(HttpStatus.BAD_REQUEST, "이메일 인증에 실패했습니다.")
 }
 
-enum class UserErrorCode(override val httpStatus: HttpStatus, override val reason: String? = null) : RestErrorCode {
-    ERR_NOT_FOUND_USER(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.")
+enum class UserErrorCode(
+    override val httpStatus: HttpStatus = HttpStatus.BAD_REQUEST,
+    override val reason: String? = null
+) : RestErrorCode {
+    ERR_NOT_FOUND_USER(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다."),
+    ERR_WITHDRAW_USER(reason = "탈퇴한 유저입니다.")
 }
 
 enum class EmailPasswordUserErrorCode(

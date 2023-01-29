@@ -20,6 +20,7 @@ object RestErrorCodeConverter {
 
     private fun convert(exception: UserException) = when (exception) {
         is UserException.NotFoundException -> UserErrorCode.ERR_NOT_FOUND_USER
+        is UserException.WithdrawUserException -> UserErrorCode.ERR_WITHDRAW_USER
     }
 
     private fun convert(exception: EmailPasswordUserException) = when (exception) {
