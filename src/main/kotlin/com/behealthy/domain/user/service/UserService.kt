@@ -1,21 +1,28 @@
 package com.behealthy.domain.user.service
 
 import com.behealthy.domain.user.dto.UserCreationDto
-import com.behealthy.domain.user.entity.User
+import com.behealthy.domain.user.entity.UserEntity
 import com.behealthy.domain.user.repository.UserRepository
+import com.behealthy.domain.user.vo.User
+import com.behealthy.exception.UserException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @Service
 class UserService(private val repository: UserRepository) {
 
     @Transactional
-    fun create(userCreationDto: UserCreationDto): User {
-        return repository.save(User(name = userCreationDto.name))
+    fun create(userCreationDto: UserCreationDto): UserEntity {
+        return repository.save(UserEntity(name = userCreationDto.name))
     }
 
-    fun find(id: Long): Optional<User> {
-        return repository.findById(id)
+    @Transactional
+    fun withdraw(id: Long) {
+        val user = User(findOfRaiseIfNotExist(id))
+        user.withdraw()
+    }
+
+    fun findOfRaiseIfNotExist(id: Long): UserEntity {
+        return repository.findById(id).orElseThrow { UserException.NotFoundException() }
     }
 }

@@ -4,6 +4,7 @@ import com.behealthy.exception.*
 
 object RestErrorCodeConverter {
     fun convert(exception: CustomException): RestErrorCode = when (exception) {
+        is NotSupportedException -> CommonErrorCode.ERR_NOT_SUPPORTED
         is AuthenticationException -> convert(exception)
         is UserException -> convert(exception)
         is ControllerException -> convert(exception)

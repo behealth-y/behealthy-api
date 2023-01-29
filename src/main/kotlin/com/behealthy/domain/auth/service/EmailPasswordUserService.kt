@@ -44,7 +44,7 @@ class EmailPasswordUserService(
 
     override fun loadUserByUsername(username: String): UserDetails {
         val emailPasswordUser = getOrRaiseIfNotExist(username)
-        val user = userService.find(emailPasswordUser.userId).get()
+        val user = userService.findOfRaiseIfNotExist(emailPasswordUser.userId)
         return EmailPasswordAuthenticationUser(emailPasswordUser.email, emailPasswordUser.password, user)
     }
 
