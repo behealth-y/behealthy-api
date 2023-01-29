@@ -10,6 +10,7 @@ object RestErrorCodeConverter {
         is ControllerException -> convert(exception)
         is EmailPasswordUserException -> convert(exception)
         is WorkoutGoalException -> convert(exception)
+        is WorkoutLogException -> convert(exception)
     }
 
     private fun convert(exception: AuthenticationException) = when (exception) {
@@ -35,6 +36,9 @@ object RestErrorCodeConverter {
         is WorkoutGoalException.InvalidMinuteException -> WorkoutGoalErrorCode.ERR_INVALID_MINUTE
         is WorkoutGoalException.InvalidHourException -> WorkoutGoalErrorCode.ERR_INVALID_HOUR
         is WorkoutGoalException.GoalTimeCanNotZero -> WorkoutGoalErrorCode.ERR_GOAL_TIME_CAN_NOT_ZERO
+    }
 
+    private fun convert(exception: WorkoutLogException) = when (exception) {
+        is WorkoutLogException.InvalidTimeException -> WorkoutLogErrorCode.ERR_INVALID_TIME
     }
 }
