@@ -16,7 +16,8 @@ enum class ControllerErrorCode(override val httpStatus: HttpStatus, override val
 
 enum class CommonErrorCode(override val httpStatus: HttpStatus, override val reason: String? = null) :
     RestErrorCode {
-    ERR_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "지원하지 않는 요청입니다.")
+    ERR_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "지원하지 않는 요청입니다."),
+    ERR_BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.")
 }
 
 enum class AuthenticationErrorCode(override val httpStatus: HttpStatus, override val reason: String? = null) :
