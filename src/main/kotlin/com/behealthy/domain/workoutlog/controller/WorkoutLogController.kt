@@ -6,10 +6,7 @@ import com.behealthy.domain.workoutlog.dto.WorkoutLogDto
 import com.behealthy.domain.workoutlog.service.WorkoutLogService
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RequestMapping("/api")
 @RestController
@@ -19,18 +16,40 @@ class WorkoutLogController(private val workoutLogService: WorkoutLogService) {
     @PostMapping("/workout-logs")
     fun create(@AuthenticationPrincipal user: AuthenticatedUser, @RequestBody request: WorkoutLogSetRequest) {
         workoutLogService.create(
-            with(request) {
-                WorkoutLogDto(
-                    userId = user.userId,
-                    name = name,
-                    emoji = emoji,
-                    date = date,
-                    startTime = startTime,
-                    endTime = endTime,
-                    intensity = intensity,
-                    comment = comment
-                )
-            }
+            request.toWorkoutLogDto(user.userId)
         )
     }
+
+    @Operation(summary = "운동 기록 수정")
+    @PatchMapping("/workout-logs/{workoutLogId}")
+    fun modify(
+        @AuthenticationPrincipal user: AuthenticatedUser,
+        @PathVariable workoutLogId: Long,
+        @RequestBody request: WorkoutLogSetRequest
+    ) {
+        workoutLogService.modify(workoutLogId, request.toWorkoutLogDto(user.userId))
+    }
+
+    @Operation(summary = "운동 기록 삭제")
+    @DeleteMapping("/workout-logs/{workoutLogId}")
+    fun delete(
+        @AuthenticationPrincipal user: AuthenticatedUser,
+        @PathVariable workoutLogId: Long
+    ) {
+        workoutLogService.delete(workoutLogId)
+    }
+
+    private fun WorkoutLogSetRequest.toWorkoutLogDto(userId: Long) = with(this) {
+        WorkoutLogDto(
+            userId = userId,
+            name = name,
+            emoji = emoji,
+            date = date,
+            startTime = startTime,
+            endTime = endTime,
+            intensity = intensity,
+            comment = comment
+        )
+    }
+
 }

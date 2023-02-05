@@ -38,7 +38,8 @@ object RestErrorCodeConverter {
         is WorkoutGoalException.GoalTimeCanNotZero -> WorkoutGoalErrorCode.ERR_GOAL_TIME_CAN_NOT_ZERO
     }
 
-    private fun convert(exception: WorkoutLogException) = when (exception) {
+    private fun convert(exception: WorkoutLogException): RestErrorCode = when (exception) {
         is WorkoutLogException.InvalidTimeException -> WorkoutLogErrorCode.ERR_INVALID_TIME
+        is WorkoutLogException.NotFoundException -> ControllerErrorCode.ERR_NOT_FOUND
     }
 }

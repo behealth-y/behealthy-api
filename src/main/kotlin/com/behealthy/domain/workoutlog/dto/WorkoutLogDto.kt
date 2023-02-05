@@ -28,12 +28,7 @@ class WorkoutLogDto(
         date = date,
         startTime = startTime,
         endTime = endTime,
-        intensity = when (intensity) {
-            WorkoutLogIntensity.EASY -> WorkoutLogEntity.Intensity.EASY
-            WorkoutLogIntensity.NORMAL -> WorkoutLogEntity.Intensity.NORMAL
-            WorkoutLogIntensity.HARD -> WorkoutLogEntity.Intensity.HARD
-            WorkoutLogIntensity.EXTREMELY_HARD -> WorkoutLogEntity.Intensity.EXTREMELY_HARD
-        },
+        intensity = intensity.convertEntityType(),
         comment = comment
     )
 }
