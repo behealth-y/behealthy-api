@@ -30,6 +30,15 @@ class WorkoutLogController(private val workoutLogService: WorkoutLogService) {
         workoutLogService.modify(workoutLogId, request.toWorkoutLogDto(user.userId))
     }
 
+    @Operation(summary = "운동 기록 삭제")
+    @DeleteMapping("/workout-logs/{workoutLogId}")
+    fun delete(
+        @AuthenticationPrincipal user: AuthenticatedUser,
+        @PathVariable workoutLogId: Long
+    ) {
+        workoutLogService.delete(workoutLogId)
+    }
+
     private fun WorkoutLogSetRequest.toWorkoutLogDto(userId: Long) = with(this) {
         WorkoutLogDto(
             userId = userId,

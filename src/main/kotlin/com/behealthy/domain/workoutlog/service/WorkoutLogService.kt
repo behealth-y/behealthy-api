@@ -21,6 +21,11 @@ class WorkoutLogService(private val workoutLogRepository: WorkoutLogRepository) 
         workoutLog.modify(workoutLogDto)
     }
 
+    @Transactional
+    fun delete(workoutLogId: Long) {
+        workoutLogRepository.deleteAllById(setOf(workoutLogId))
+    }
+
     @Transactional(readOnly = true)
     fun findOneById(workoutLogId: Long): WorkoutLogEntity {
         return workoutLogRepository.findById(workoutLogId).orElseThrow { WorkoutLogException.NotFoundException() }
