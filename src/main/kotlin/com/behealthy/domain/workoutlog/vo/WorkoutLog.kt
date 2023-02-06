@@ -8,6 +8,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 class WorkoutLog(private val workoutLogEntity: WorkoutLogEntity) {
+    val id: Long = workoutLogEntity.id!!
     val name: String get() = workoutLogEntity.name
     val emoji: String get() = workoutLogEntity.emoji
     val date: LocalDate get() = workoutLogEntity.date

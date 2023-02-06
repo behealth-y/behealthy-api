@@ -2,7 +2,7 @@ package com.behealthy.domain.workoutlog.controller.dto
 
 import java.time.LocalDate
 
-class WorkoutTimeByDateResponse(
+class WorkoutTimeFindResponse(
     val year: Int,
     val month: Int,
     val workoutLogs: List<Element>

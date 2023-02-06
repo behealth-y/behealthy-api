@@ -8,6 +8,7 @@ import com.behealthy.exception.WorkoutLogException
 import com.behealthy.util.LocalDateExtension.withEndDayOfMonth
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
 import java.time.YearMonth
 
 @Service
@@ -42,4 +43,9 @@ class WorkoutLogService(private val workoutLogRepository: WorkoutLogRepository) 
         )
             .map { WorkoutLog(it) }
     }
+
+    fun findAllByDate(userId: Long, date: LocalDate): List<WorkoutLog> {
+        return workoutLogRepository.findAllByUserIdAndDate(userId, date).map { WorkoutLog(it) }
+    }
+
 }
