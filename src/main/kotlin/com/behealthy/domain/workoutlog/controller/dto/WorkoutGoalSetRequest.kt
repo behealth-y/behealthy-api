@@ -1,11 +1,11 @@
 package com.behealthy.domain.workoutlog.controller.dto
 
-class WorkoutSetRequest(
+class WorkoutGoalSetRequest(
     val hour: Int,
     val minute: Int
 )
 
-class WorkoutGetResponse(
+class WorkoutGoalGetResponse(
     val hour: Int,
     val minute: Int
 )
