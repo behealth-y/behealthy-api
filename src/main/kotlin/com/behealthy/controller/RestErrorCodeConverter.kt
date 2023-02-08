@@ -6,6 +6,7 @@ object RestErrorCodeConverter {
     fun convert(exception: CustomException): RestErrorCode = when (exception) {
         is NotSupportedException -> CommonErrorCode.ERR_NOT_SUPPORTED
         is IllegalArgumentException -> CommonErrorCode.ERR_BAD_REQUEST
+        is AccessDeniedException -> CommonErrorCode.ERR_ACCESS_DENIED
         is AuthenticationException -> convert(exception)
         is UserException -> convert(exception)
         is ControllerException -> convert(exception)
