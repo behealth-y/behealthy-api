@@ -3,6 +3,7 @@ package com.behealthy.domain.workoutlog.controller
 import com.behealthy.domain.auth.dto.AuthenticatedUser
 import com.behealthy.domain.workoutlog.controller.dto.WorkoutLogFindResponse
 import com.behealthy.domain.workoutlog.controller.dto.WorkoutLogSetRequest
+import com.behealthy.domain.workoutlog.controller.dto.WorkoutLogSetResponse
 import com.behealthy.domain.workoutlog.controller.dto.WorkoutTimeFindResponse
 import com.behealthy.domain.workoutlog.dto.WorkoutLogDto
 import com.behealthy.domain.workoutlog.service.WorkoutLogService
@@ -20,10 +21,12 @@ class WorkoutLogController(private val workoutLogService: WorkoutLogService) {
 
     @Operation(summary = "운동 기록 생성")
     @PostMapping("/workout-logs")
-    fun create(@AuthenticationPrincipal user: AuthenticatedUser, @RequestBody request: WorkoutLogSetRequest) {
-        workoutLogService.create(
-            request.toWorkoutLogDto(user.userId)
-        )
+    fun create(
+        @AuthenticationPrincipal user: AuthenticatedUser,
+        @RequestBody request: WorkoutLogSetRequest
+    ): WorkoutLogSetResponse {
+        val workoutLog = workoutLogService.create(request.toWorkoutLogDto(user.userId))
+        return WorkoutLogSetResponse(workoutLog.id!!)
     }
 
     @Operation(summary = "운동 기록 수정")

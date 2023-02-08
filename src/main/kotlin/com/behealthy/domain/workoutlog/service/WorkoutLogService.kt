@@ -14,8 +14,8 @@ import java.time.YearMonth
 @Service
 class WorkoutLogService(private val workoutLogRepository: WorkoutLogRepository) {
 
-    fun create(workoutLogDto: WorkoutLogDto) {
-        workoutLogRepository.save(workoutLogDto.toWorkoutLogEntity())
+    fun create(workoutLogDto: WorkoutLogDto): WorkoutLogEntity {
+        return workoutLogRepository.save(workoutLogDto.toWorkoutLogEntity())
     }
 
     @Transactional
