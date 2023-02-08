@@ -28,7 +28,7 @@ class WorkoutLogDto(
         date = date,
         startTime = startTime,
         endTime = endTime,
-        intensity = intensity.convertEntityType(),
+        intensity = intensity.workoutLogEntityIntensity,
         comment = comment
     )
 }

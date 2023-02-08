@@ -29,7 +29,7 @@ class WorkoutLog(private val workoutLogEntity: WorkoutLogEntity) {
         startTime = workoutLogDto.startTime
         endTime = workoutLogDto.endTime
         emoji = workoutLogDto.emoji
-        intensity = workoutLogDto.intensity.convertEntityType()
+        intensity = workoutLogDto.intensity.workoutLogEntityIntensity
         comment = workoutLogDto.comment
         name = workoutLogDto.name
     }

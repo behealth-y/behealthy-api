@@ -1,12 +1,10 @@
 package com.behealthy.domain.workoutlog.controller
 
 import com.behealthy.domain.auth.dto.AuthenticatedUser
-import com.behealthy.domain.workoutlog.controller.dto.WorkoutLogFindResponse
-import com.behealthy.domain.workoutlog.controller.dto.WorkoutLogSetRequest
-import com.behealthy.domain.workoutlog.controller.dto.WorkoutLogSetResponse
-import com.behealthy.domain.workoutlog.controller.dto.WorkoutTimeFindResponse
+import com.behealthy.domain.workoutlog.controller.dto.*
 import com.behealthy.domain.workoutlog.dto.WorkoutLogDto
 import com.behealthy.domain.workoutlog.service.WorkoutLogService
+import com.behealthy.domain.workoutlog.type.WorkoutLogIntensity
 import com.behealthy.domain.workoutlog.vo.WorkoutLog
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.format.annotation.DateTimeFormat
@@ -68,6 +66,27 @@ class WorkoutLogController(private val workoutLogService: WorkoutLogService) {
     ): WorkoutLogFindResponse {
         val workoutLogs = workoutLogService.findAllByDate(user.userId, date)
         return WorkoutLogFindResponse.of(date, workoutLogs)
+    }
+
+    @Operation(summary = "특정 id 운동 기록 조회")
+    @GetMapping("/workout-logs/{workoutLogId}")
+    fun findWorkoutLog(
+        @AuthenticationPrincipal user: AuthenticatedUser,
+        @PathVariable workoutLogId: Long
+    ): WorkoutLogResponse {
+        val workoutLog = workoutLogService.findOnById(user.userId, workoutLogId)
+        return with(workoutLog) {
+            WorkoutLogResponse(
+                workoutLogId = id!!,
+                name = name,
+                emoji = emoji,
+                date = date,
+                startTime = startTime,
+                endTime = endTime,
+                intensity = WorkoutLogIntensity.from(intensity),
+                comment = comment
+            )
+        }
     }
 
     private fun WorkoutLogSetRequest.toWorkoutLogDto(userId: Long) = with(this) {

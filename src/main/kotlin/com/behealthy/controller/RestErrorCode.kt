@@ -17,7 +17,8 @@ enum class ControllerErrorCode(override val httpStatus: HttpStatus, override val
 enum class CommonErrorCode(override val httpStatus: HttpStatus, override val reason: String? = null) :
     RestErrorCode {
     ERR_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "지원하지 않는 요청입니다."),
-    ERR_BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.")
+    ERR_BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
+    ERR_ACCESS_DENIED(HttpStatus.BAD_REQUEST, "접근할 수 없습니다.")
 }
 
 enum class AuthenticationErrorCode(override val httpStatus: HttpStatus, override val reason: String? = null) :
@@ -55,5 +56,5 @@ enum class WorkoutLogErrorCode(
     override val httpStatus: HttpStatus = HttpStatus.BAD_REQUEST,
     override val reason: String? = null
 ) : RestErrorCode {
-    ERR_INVALID_TIME(reason = "운동 종료 시각은 시작 시각 이후여야합니다."),
+    ERR_INVALID_TIME(reason = "운동 종료 시각은 시작 시각 이후여야합니다.")
 }

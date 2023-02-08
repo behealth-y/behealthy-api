@@ -4,6 +4,7 @@ import com.behealthy.domain.workoutlog.dto.WorkoutLogDto
 import com.behealthy.domain.workoutlog.entity.WorkoutLogEntity
 import com.behealthy.domain.workoutlog.repository.WorkoutLogRepository
 import com.behealthy.domain.workoutlog.vo.WorkoutLog
+import com.behealthy.exception.AccessDeniedException
 import com.behealthy.exception.WorkoutLogException
 import com.behealthy.util.LocalDateExtension.withEndDayOfMonth
 import org.springframework.stereotype.Service
@@ -27,6 +28,12 @@ class WorkoutLogService(private val workoutLogRepository: WorkoutLogRepository) 
     @Transactional
     fun delete(workoutLogId: Long) {
         workoutLogRepository.deleteAllById(setOf(workoutLogId))
+    }
+
+    fun findOnById(userId: Long, workoutLogId: Long): WorkoutLogEntity {
+        return findOneById(workoutLogId).also {
+            if (it.userId != userId) throw AccessDeniedException()
+        }
     }
 
     @Transactional(readOnly = true)
