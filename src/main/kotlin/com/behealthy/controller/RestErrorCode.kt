@@ -25,7 +25,8 @@ enum class AuthenticationErrorCode(override val httpStatus: HttpStatus, override
     RestErrorCode {
     ERR_UNAUTHENTICATED_USER(HttpStatus.UNAUTHORIZED, "인증에 실패했습니다."),
     ERR_ALREADY_EXIST_EMAIL(HttpStatus.BAD_REQUEST, "중복된 이메일입니다."),
-    ERR_FAILED_EMAIL_VERIFICATION(HttpStatus.BAD_REQUEST, "이메일 인증에 실패했습니다.")
+    ERR_FAILED_EMAIL_VERIFICATION(HttpStatus.BAD_REQUEST, "이메일 인증에 실패했습니다."),
+    ERR_INVALID_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "유효하지 않는 리프레시 토큰입니다.")
 }
 
 enum class UserErrorCode(

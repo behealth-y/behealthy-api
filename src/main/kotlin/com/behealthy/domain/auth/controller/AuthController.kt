@@ -6,6 +6,7 @@ import com.behealthy.domain.auth.dto.EmailPasswordAuthenticationUser
 import com.behealthy.domain.auth.dto.EmailVerificationDto
 import com.behealthy.domain.auth.service.AuthService
 import com.behealthy.domain.auth.service.EmailVerificationService
+import com.behealthy.domain.user.service.UserService
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -22,7 +23,8 @@ class AuthController(
     private val authService: AuthService,
     private val authenticationManager: AuthenticationManager,
     private val jwtUtil: JWTUtil,
-    private val emailVerificationService: EmailVerificationService
+    private val emailVerificationService: EmailVerificationService,
+    private val userService: UserService
 ) {
 
     @Operation(summary = "회원가입")
@@ -47,7 +49,22 @@ class AuthController(
                 emailPasswordAuthenticationDto.password
             )
         ).principal as EmailPasswordAuthenticationUser
-        return AuthenticationResponse(jwtUtil.generateToken(emailPasswordUserDetails.userEntity))
+
+        val accessToken = jwtUtil.generateAccessToken(emailPasswordUserDetails.userEntity)
+        val refreshToken = jwtUtil.generateRefreshToken(emailPasswordUserDetails.userEntity)
+            .also { authService.reissueRefreshToken(emailPasswordUserDetails.userEntity.id!!, it) }
+        return AuthenticationResponse(accessToken, refreshToken)
+    }
+
+    @Operation(summary = "인증 리프레시")
+    @PostMapping("/auth/refresh")
+    fun authenticationByRefreshToken(@RequestBody request: AuthenticationByRefreshTokenRequest): AuthenticationByRefreshTokenResponse {
+        jwtUtil.validateToken(request.refreshToken)
+        val userId = jwtUtil.extractUserId(request.refreshToken)
+        authService.raiseIfNotValidRefreshToken(userId, request.refreshToken)
+        return AuthenticationByRefreshTokenResponse(
+            jwtUtil.generateRefreshToken(userService.findOfRaiseIfNotExist(userId))
+        )
     }
 
     @Operation(summary = "이메일 인증번호 발송")
