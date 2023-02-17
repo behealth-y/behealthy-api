@@ -89,7 +89,7 @@ class SecurityConfig {
             response.contentType = MediaType.APPLICATION_JSON_VALUE
             response.writer.write(
                 objectMapper.writeValueAsString(
-                    mapOf("token" to jwtUtil.generateToken((authentication.principal as OAuth2AuthenticationUser).userEntity))
+                    mapOf("token" to jwtUtil.generateAccessToken((authentication.principal as OAuth2AuthenticationUser).userEntity))
                 )
             );
         }

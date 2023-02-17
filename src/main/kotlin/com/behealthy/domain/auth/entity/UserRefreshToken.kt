@@ -8,22 +8,16 @@ import javax.persistence.*
 
 
 @EntityListeners(AuditingEntityListener::class)
-@Table(
-    name = "oauth2_user",
-    uniqueConstraints = [UniqueConstraint(name = "uk__provider__oauth2_id", columnNames = ["provider", "oauth2_id"])]
-)
+@Table(name = "user_refresh_token")
 @Entity
-class OAuth2User(
+class UserRefreshToken(
 
     @Id
     @Column(name = "user_id", nullable = false)
     val userId: Long,
 
-    @Column(nullable = false)
-    val provider: String,
-
-    @Column(name = "oauth2_id", nullable = false)
-    val oauth2Id: String
+    @Column(name = "refresh_token", nullable = false)
+    var refreshToken: String
 ) {
 
     @CreatedDate

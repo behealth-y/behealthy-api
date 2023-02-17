@@ -6,5 +6,14 @@ data class EmailPasswordAuthenticationRequest(
 )
 
 data class AuthenticationResponse(
-    val token: String
+    val accessToken: String,
+    val refreshToken: String
+)
+
+class AuthenticationByRefreshTokenRequest(
+    val refreshToken: String
+)
+
+class AuthenticationByRefreshTokenResponse(
+    val accessToken: String
 )

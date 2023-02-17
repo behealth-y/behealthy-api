@@ -38,8 +38,20 @@ class JWTUtil(
         return isTokenExpired(token)
     }
 
-    fun generateToken(userEntity: UserEntity): String {
-        return createToken(mutableMapOf("userId" to userEntity.id!!, "name" to userEntity.name), userEntity.id)
+    fun generateAccessToken(userEntity: UserEntity): String {
+        return createToken(
+            mutableMapOf("userId" to userEntity.id!!, "name" to userEntity.name),
+            userEntity.id,
+            ACCESS_TOKEN_EXPIRATION_MILLISECOND
+        )
+    }
+
+    fun generateRefreshToken(userEntity: UserEntity): String {
+        return createToken(
+            mutableMapOf("userId" to userEntity.id!!),
+            userEntity.id,
+            REFRESH_TOKEN_EXPIRATION_MILLISECOND
+        )
     }
 
     private fun extractAllClaims(token: String): Claims {
@@ -50,17 +62,18 @@ class JWTUtil(
         return extractExpiration(token).after(Date())
     }
 
-    private fun createToken(claims: MutableMap<String, Any>, userId: Long): String {
+    private fun createToken(claims: MutableMap<String, Any>, userId: Long, expirationTimeMs: Long): String {
         return Jwts.builder()
             .setClaims(claims)
             .setSubject(userId.toString())
             .setIssuedAt(Date())
-            .setExpiration(Date(System.currentTimeMillis() + EXPIRATION_MILLISECOND))
+            .setExpiration(Date(System.currentTimeMillis() + expirationTimeMs))
             .signWith(SignatureAlgorithm.HS256, secret).compact()
 
     }
 
     companion object {
-        const val EXPIRATION_MILLISECOND = 1000 * 60 * 60 * 1 // 1 hour
+        const val ACCESS_TOKEN_EXPIRATION_MILLISECOND: Long = 1000 * 60 * 60 * 1 // 1 hour
+        const val REFRESH_TOKEN_EXPIRATION_MILLISECOND: Long = 1000L * 60L * 60L * 24L * 90L // 90 days
     }
 }

@@ -5,4 +5,6 @@ sealed class AuthenticationException : CustomException() {
     class AlreadyExistEmailException : AuthenticationException()
 
     class EmailVerificationException : AuthenticationException()
+
+    class InvalidRefreshTokenException : AuthenticationException()
 }
