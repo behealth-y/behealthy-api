@@ -113,7 +113,7 @@ class WorkoutLogController(
                 ?.sumOf { it }
                 ?.div(workoutTimeByDateInCurrentWeek.values.size)
                 ?: 0L,
-            workoutTimes = workoutTimeByDateInCurrentWeek
+            workoutTimesInCurrentWeek = workoutTimeByDateInCurrentWeek
                 .map { WorkoutLogStatResponse.WorkoutTime(it.key.dayOfWeek, it.value) }
                 .sortedBy { it.dayOfWeek }
         )
