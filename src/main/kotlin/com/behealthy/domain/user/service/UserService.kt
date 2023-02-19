@@ -22,7 +22,13 @@ class UserService(private val repository: UserRepository) {
         user.withdraw()
     }
 
+    @Transactional(readOnly = true)
     fun findOfRaiseIfNotExist(id: Long): UserEntity {
         return repository.findById(id).orElseThrow { UserException.NotFoundException() }
+    }
+
+    @Transactional
+    fun changeName(id: Long, name: String) {
+        User(findOfRaiseIfNotExist(id)).changeName(name)
     }
 }
