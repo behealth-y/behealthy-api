@@ -63,7 +63,7 @@ class AuthController(
         val userId = jwtUtil.extractUserId(request.refreshToken)
         authService.raiseIfNotValidRefreshToken(userId, request.refreshToken)
         return AuthenticationByRefreshTokenResponse(
-            jwtUtil.generateRefreshToken(userService.findOfRaiseIfNotExist(userId))
+            jwtUtil.generateAccessToken(userService.findOfRaiseIfNotExist(userId))
         )
     }
 
