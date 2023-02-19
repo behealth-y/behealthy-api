@@ -10,4 +10,8 @@ class User(private val userEntity: UserEntity) {
     fun withdraw() {
         userEntity.status = UserEntity.Status.WITHDRAW
     }
+
+    fun changeName(name: String) {
+        userEntity.name = name
+    }
 }

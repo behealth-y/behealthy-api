@@ -3,6 +3,7 @@ package com.behealthy.domain.workoutlog.controller
 import com.behealthy.domain.auth.dto.AuthenticatedUser
 import com.behealthy.domain.workoutlog.controller.dto.*
 import com.behealthy.domain.workoutlog.dto.WorkoutLogDto
+import com.behealthy.domain.workoutlog.service.WorkoutGoalService
 import com.behealthy.domain.workoutlog.service.WorkoutLogService
 import com.behealthy.domain.workoutlog.type.WorkoutLogIntensity
 import com.behealthy.domain.workoutlog.vo.WorkoutLog
@@ -15,7 +16,10 @@ import java.time.YearMonth
 
 @RequestMapping("/api")
 @RestController
-class WorkoutLogController(private val workoutLogService: WorkoutLogService) {
+class WorkoutLogController(
+    private val workoutLogService: WorkoutLogService,
+    private val workoutGoalService: WorkoutGoalService
+) {
 
     @Operation(summary = "운동 기록 생성")
     @PostMapping("/workout-logs")
@@ -87,6 +91,28 @@ class WorkoutLogController(private val workoutLogService: WorkoutLogService) {
                 comment = comment
             )
         }
+    }
+
+    @Operation(summary = "운동 기록/목표 통계")
+    @GetMapping("/workout-logs/stat")
+    fun statWorkoutLog(
+        @AuthenticationPrincipal user: AuthenticatedUser,
+    ): WorkoutLogStatResponse {
+        val today = LocalDate.now()
+        val workoutGoal = workoutGoalService.getAndSaveWorkoutGoal(user.userId)
+        val totalWorkoutTimeByDateInWeek = workoutLogService
+            .findAllByDateBetween(user.userId, today.minusWeeks(1), today)
+            .groupBy { it.date }
+            .mapValues { it.value.sumOf { workoutLog -> workoutLog.workoutTime } }
+
+        return WorkoutLogStatResponse(
+            workoutGoal = with(workoutGoal) { WorkoutGoalGetResponse(hour, minute) },
+            todayWorkoutTime = totalWorkoutTimeByDateInWeek[today] ?: 0L,
+            avgWorkoutTimeInWeek = totalWorkoutTimeByDateInWeek.values
+                .takeIf { it.isNotEmpty() }
+                ?.sumOf { it }
+                ?.div(totalWorkoutTimeByDateInWeek.values.size) ?: 0L
+        )
     }
 
     private fun WorkoutLogSetRequest.toWorkoutLogDto(userId: Long) = with(this) {

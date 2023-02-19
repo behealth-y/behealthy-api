@@ -9,7 +9,7 @@ import java.time.LocalDate
 @Repository
 interface WorkoutLogRepository : JpaRepository<WorkoutLogEntity, Long> {
 
-
+    @Transactional(readOnly = true)
     fun findAllByUserIdAndDateBetween(userId: Long, startDate: LocalDate, endDate: LocalDate): List<WorkoutLogEntity>
 
     @Transactional(readOnly = true)
