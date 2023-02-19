@@ -100,18 +100,22 @@ class WorkoutLogController(
     ): WorkoutLogStatResponse {
         val today = LocalDate.now()
         val workoutGoal = workoutGoalService.getAndSaveWorkoutGoal(user.userId)
-        val totalWorkoutTimeByDateInWeek = workoutLogService
-            .findAllByDateBetween(user.userId, today.minusWeeks(1), today)
+        val workoutTimeByDateInCurrentWeek = workoutLogService
+            .findAllInCurrentWeek(user.userId, today)
             .groupBy { it.date }
             .mapValues { it.value.sumOf { workoutLog -> workoutLog.workoutTime } }
 
         return WorkoutLogStatResponse(
             workoutGoal = with(workoutGoal) { WorkoutGoalGetResponse(hour, minute) },
-            todayWorkoutTime = totalWorkoutTimeByDateInWeek[today] ?: 0L,
-            avgWorkoutTimeInWeek = totalWorkoutTimeByDateInWeek.values
+            todayWorkoutTime = workoutTimeByDateInCurrentWeek[today] ?: 0L,
+            avgWorkoutTimeInCurrentWeek = workoutTimeByDateInCurrentWeek.values
                 .takeIf { it.isNotEmpty() }
                 ?.sumOf { it }
-                ?.div(totalWorkoutTimeByDateInWeek.values.size) ?: 0L
+                ?.div(workoutTimeByDateInCurrentWeek.values.size)
+                ?: 0L,
+            workoutTimes = workoutTimeByDateInCurrentWeek
+                .map { WorkoutLogStatResponse.WorkoutTime(it.key.dayOfWeek, it.value) }
+                .sortedBy { it.dayOfWeek }
         )
     }
 

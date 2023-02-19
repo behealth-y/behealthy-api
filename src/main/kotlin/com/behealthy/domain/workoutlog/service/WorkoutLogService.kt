@@ -55,8 +55,11 @@ class WorkoutLogService(private val workoutLogRepository: WorkoutLogRepository) 
         return workoutLogRepository.findAllByUserIdAndDate(userId, date).map { WorkoutLog(it) }
     }
 
-    fun findAllByDateBetween(userId: Long, startDate: LocalDate, endDate: LocalDate): List<WorkoutLog> {
-        return workoutLogRepository.findAllByUserIdAndDateBetween(userId, startDate, endDate).map { WorkoutLog(it) }
+    fun findAllInCurrentWeek(userId: Long, criteriaDate: LocalDate): List<WorkoutLog> {
+        return workoutLogRepository.findAllByUserIdAndDateBetween(
+            userId,
+            criteriaDate.minusDays(criteriaDate.dayOfWeek.value.toLong() - 1),
+            criteriaDate
+        ).map { WorkoutLog(it) }
     }
-
 }
