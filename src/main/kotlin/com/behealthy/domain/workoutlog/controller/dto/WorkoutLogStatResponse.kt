@@ -1,6 +1,6 @@
 package com.behealthy.domain.workoutlog.controller.dto
 
-import java.time.DayOfWeek
+import java.time.LocalDate
 
 class WorkoutLogStatResponse(
     val workoutGoal: WorkoutGoalGetResponse,
@@ -9,7 +9,7 @@ class WorkoutLogStatResponse(
     val workoutTimesInCurrentWeek: List<WorkoutTime>
 ) {
     class WorkoutTime(
-        val dayOfWeek: DayOfWeek,
+        val date: LocalDate,
         val workoutTime: Long
     )
 }
