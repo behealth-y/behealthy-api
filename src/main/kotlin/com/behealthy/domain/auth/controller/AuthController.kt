@@ -8,8 +8,6 @@ import com.behealthy.domain.auth.service.AuthService
 import com.behealthy.domain.auth.service.EmailVerificationService
 import com.behealthy.domain.user.service.UserService
 import io.swagger.v3.oas.annotations.Operation
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.web.bind.annotation.PostMapping
@@ -32,9 +30,8 @@ class AuthController(
     fun signup(
         @RequestBody
         emailPasswordUserCreationDto: EmailPasswordUserCreationRequest
-    ): ResponseEntity<Unit> {
+    ) {
         authService.signUp(emailPasswordUserCreationDto)
-        return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
     @Operation(summary = "인증")
