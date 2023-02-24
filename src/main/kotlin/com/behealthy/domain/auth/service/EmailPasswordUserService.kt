@@ -31,7 +31,7 @@ class EmailPasswordUserService(
     lateinit var self: EmailPasswordUserService
 
     @Transactional
-    fun create(emailPasswordUserCreationDto: EmailPasswordUserCreationRequest) {
+    fun create(emailPasswordUserCreationDto: EmailPasswordUserCreationRequest): UserEntity {
         raiseIfDuplicatedEmail(emailPasswordUserCreationDto.email)
         val user = userService.create(UserCreationDto(emailPasswordUserCreationDto.name))
         repository.save(
@@ -41,6 +41,7 @@ class EmailPasswordUserService(
                 password = passwordEncoder.encode(emailPasswordUserCreationDto.password)
             )
         )
+        return user
     }
 
     override fun loadUserByUsername(username: String): UserDetails {

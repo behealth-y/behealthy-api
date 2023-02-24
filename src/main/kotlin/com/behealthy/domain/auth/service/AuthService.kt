@@ -5,6 +5,7 @@ import com.behealthy.domain.auth.dto.EmailVerificationDto
 import com.behealthy.domain.auth.entity.UserRefreshToken
 import com.behealthy.domain.auth.repository.UserRefreshTokenRepository
 import com.behealthy.domain.auth.type.EmailVerificationPurpose
+import com.behealthy.domain.user.entity.UserEntity
 import com.behealthy.exception.AuthenticationException
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
@@ -18,13 +19,13 @@ class AuthService(
     private val userRefreshTokenRepository: UserRefreshTokenRepository
 ) {
 
-    fun signUp(request: EmailPasswordUserCreationRequest) {
+    fun signUp(request: EmailPasswordUserCreationRequest): UserEntity {
         try {
             emailVerificationService.verify(
                 emailVerificationDto = EmailVerificationDto(request.email, EmailVerificationPurpose.SIGN_UP),
                 code = request.emailVerificationCode
             )
-            emailPasswordUserService.create(request)
+            return emailPasswordUserService.create(request)
         } catch (e: DataIntegrityViolationException) {
             throw AuthenticationException.AlreadyExistEmailException()
         }

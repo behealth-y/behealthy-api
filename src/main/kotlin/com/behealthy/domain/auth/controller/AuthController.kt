@@ -30,8 +30,12 @@ class AuthController(
     fun signup(
         @RequestBody
         emailPasswordUserCreationDto: EmailPasswordUserCreationRequest
-    ) {
-        authService.signUp(emailPasswordUserCreationDto)
+    ): AuthenticationResponse {
+        val userEntity = authService.signUp(emailPasswordUserCreationDto)
+        val accessToken = jwtUtil.generateAccessToken(userEntity)
+        val refreshToken = jwtUtil.generateRefreshToken(userEntity)
+            .also { authService.reissueRefreshToken(userEntity.id!!, it) }
+        return AuthenticationResponse(accessToken, refreshToken)
     }
 
     @Operation(summary = "인증")
