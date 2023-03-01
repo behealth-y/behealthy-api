@@ -11,7 +11,7 @@ data class VerificationCode(
     fun isVerify(code: String) = this.code == code && expireAt >= LocalDateTime.now()
 
     companion object {
-        fun generate(availableMinute: Long = 3): VerificationCode {
+        fun generate(availableMinute: Long = 10): VerificationCode {
             return VerificationCode(
                 code = "${Random.nextInt(100, 999)}${Random.nextInt(100, 999)}",
                 expireAt = LocalDateTime.now().plusMinutes(availableMinute)
